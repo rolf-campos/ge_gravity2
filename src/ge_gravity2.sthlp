@@ -242,9 +242,8 @@ Madrid, Spain{break}
 {title:References}
 
 {phang}
-Campos, Reggio, and Timini, "ge_gravity2: a command to solve universal gravity models", mimeo.{break}
+Campos, Rodolfo G., Reggio, Iliana, and Timini, Jacopo (2024) "ge_gravity2: a command to solve universal gravity models", mimeo.{break}
  
-
 
 {phang}Update: April - 2024{p_end}
 

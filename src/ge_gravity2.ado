@@ -1,14 +1,16 @@
 program define ge_gravity2, eclass byable(recall)
 version 11.2
 
-*! A Stata program for solving universal gravity models, by R. Campos, I. Reggio, and J. Timini
-*! This version: v0.9 (beta), April 2024
+*! A Stata command for solving universal gravity models, by Rodolfo G. Campos, Iliana Reggio, and Jacopo Timini
+*! This version: v1.0, April 2024
 *!
-*! Suggested citation: Campos, Reggio, and Timini (2024): 
-*! "ge_gravity2: a command to solve universal gravity models"
-*! mimeo.
+*! Suggested citation: 
+*! Campos, Rodolfo G., Reggio, Iliana and Timini, Jacopo (2024), "ge_gravity2: a command to solve universal gravity models," mimeo.
 *! 
 *! This code is inspired and based on Tom Zylkin's program called ge_gravity.
+*! Zylkin (2019), "GE_GRAVITY: Stata module to solve a simple general equilibrium one sector Armington-CES trade model,"
+*! Statistical Software Components S458678, Boston College Department of Economics, revised 09 Sep 2021.
+*!
 *! We have tried to remain as close as possible to his notation and command usage.
 
 
