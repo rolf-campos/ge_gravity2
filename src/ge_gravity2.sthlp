@@ -162,7 +162,7 @@ If {cmd: ge_gravity2} is run with the {cmd:by} prefix, then only the elements {c
 Load the example data:{p_end}
 
 {p 4 8 2}
-{stata use "https://github.com/rolf-campos/ge_gravity2/raw/main/examples/ge_gravity2_example_data.dta", clear}
+{stata "use https://github.com/rolf-campos/ge_gravity2/raw/main/examples/ge_gravity2_example_data.dta, clear"}
 
 {p 4 8 2} 
 {stata describe}
