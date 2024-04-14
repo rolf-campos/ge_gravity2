@@ -1,20 +1,36 @@
 # ge_gravity2
 A Stata command to solve universal gravity models
-### The command
-`ge_gravity2` is a Stata command that solves and simulates a gravity model with a positive supply elasticity and, more generally, economic geography models in the class of universal gravity models defined in the article by Allen, Arkolakis and Takahashi, 2020, ["Universal Gravity,"](https://doi.org/10.1086/704385) *Journal of Political Economy*, 128(2), 2020, 393-433 [(ungated link)](https://arkolakis.com/wp-content/uploads/research/UniversalGravity/AAT-Universal-Gravity-paper.pdf).
 
+### The command
+`ge_gravity2` is a Stata command that solves and simulates a gravity model with a positive supply elasticity and, more generally, economic geography models in the class of universal gravity models defined in the article by Allen, Arkolakis and Takahashi, 2020, ["Universal Gravity,"](https://doi.org/10.1086/704385) *Journal of Political Economy*, 128(2), 2020, 393--433 [(ungated link)](https://arkolakis.com/wp-content/uploads/research/UniversalGravity/AAT-Universal-Gravity-paper.pdf).
+
+### Documentation
+The documentation for the command is available in this [PDF]([ge_gravity2.pdf](https://rolf-campos.github.io/project/ge_gravity2/ge_gravity2.pdf) file. This file also describes a prototypical trade model belonging to the universal gravity class, and derives in a self-contained manner all the results needed to run counterfactual simulations, including a step-by-step explanation of the algorithm used to solve for price changes in equilibrium.
+
+### Suggested citations
+If you use this command in your work, consider citing
+```plaintext
+Campos, Rodolfo G., Reggio, Iliana, and Jacopo Timini (2024). "GE_GRAVITY2: Stata module to solve a gravity model within the universal gravity class,"
+Statistical Software Components, Boston College Department of Economics, https://ideas.repec.org/c/boc/bocode/s459317.html.
+```
+and
+```plaintext
+Campos, Rodolfo G., Reggio, Iliana, and Jacopo Timini (2024). "ge_gravity2: a command for solving universal gravity models", mimeo.
+```
+
+### Installation
 The latest version of the command can be installed directly from within Stata:
 ```
 ssc install ge_gravity2, replace
 ```
 
-To take a look at the command's help file, type:
+Once installed, take a look at the command's help file by typing:
 ```
 help ge_gravity2
 ```
 
-### Example of its usage
-We want to obtain the general equilibrium effect of the North American Free Trade Agreement (NAFTA). Suppose that we know the partial equilibrium effect of the trade agreement to be 0.5. We want to obtain the impact of this agreement in general equilibrium according to a model in the universal gravity class, assuming a trade elasticity of 5.03 and a supply elasticity of 1.24. We can do this with the following code:
+### Stata example
+In this example we want to simulate the general equilibrium effect of the North American Free Trade Agreement (NAFTA), a trade agreement signed by Canada, Mexico, and the United States, that entered into force in 1994. We believe that the partial equilibrium effect of the trade agreement is 0.5, meaning that countries that are part of this trade agreement are expected to increase their trade flows with other members by exp(0.5) - 1 = 65%, if nothing else changes (i.e., in partial equilibrium). We want to obtain the general equilibrium effect of this agreement according to a universal gravity model, assuming a trade elasticity of 5.03 and a supply elasticity of 1.24. We can do this with the following code:
 ```
 clear all
 ** Load example data
