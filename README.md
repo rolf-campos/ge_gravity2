@@ -1,5 +1,5 @@
 # ge_gravity2
-A Stata command to solve universal gravity models
+A Stata command for solving universal gravity models
 
 ### The command
 `ge_gravity2` is a Stata command that solves and simulates a gravity model with a positive supply elasticity and, more generally, economic geography models in the class of universal gravity models defined in the article by Allen, Arkolakis and Takahashi, 2020, ["Universal Gravity,"](https://doi.org/10.1086/704385) *Journal of Political Economy*, 128(2), 2020, 393--433 [(ungated link)](https://arkolakis.com/wp-content/uploads/research/UniversalGravity/AAT-Universal-Gravity-paper.pdf).
