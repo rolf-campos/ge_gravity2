@@ -59,7 +59,7 @@ ereturn list
 
 ## References
 
-Allen, T., C. Arkolakis and Y. Takahashi, 2020, [Universal Gravity](https://doi.org/10.1086/704385), *Journal of Political Economy*, 128(2), 2020, 393--433 [(ungated link)](https://arkolakis.com/wp-content/uploads/research/UniversalGravity/AAT-Universal-Gravity-paper.pdf)
+Allen, T., C. Arkolakis and Y. Takahashi, 2020, [Universal Gravity](https://doi.org/10.1086/704385), *Journal of Political Economy*, 128(2), 2020, 393-433 [(ungated link)](https://arkolakis.com/wp-content/uploads/research/UniversalGravity/AAT-Universal-Gravity-paper.pdf)
 
 Baier, S. L., Y. V. Yotov, and T. Zylkin (2019), [On the widely differing effects of free trade agreements: Lessons from twenty years of trade integration](https://doi.org/10.1016/j.jinteco.2018.11.002), *Journal of International Economics*, 116, 206–226.
 
