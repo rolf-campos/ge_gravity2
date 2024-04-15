@@ -61,6 +61,6 @@ ereturn list
 
 Allen, T., C. Arkolakis and Y. Takahashi, 2020, [Universal Gravity](https://doi.org/10.1086/704385), *Journal of Political Economy*, 128(2), 2020, 393--433 [(ungated link)](https://arkolakis.com/wp-content/uploads/research/UniversalGravity/AAT-Universal-Gravity-paper.pdf)
 
-Baier, S. L., Y. V. Yotov, and T. Zylkin (2019), [On the widely differing effects of free trade agreements: Lessons from twenty years of trade integration](https://doi.org/10.1016/j.jinteco.2018.11.002). Journal of International Economics 116: 206–226.
+Baier, S. L., Y. V. Yotov, and T. Zylkin (2019), [On the widely differing effects of free trade agreements: Lessons from twenty years of trade integration](https://doi.org/10.1016/j.jinteco.2018.11.002), *Journal of International Economics*, 116, 206–226.
 
-Zylkin, T. 2019. GE GRAVITY: Stata module to solve a simple general equilibrium one sector Armington-CES trade model. Statistical Software Components, Boston College Department of Economics. https://ideas.repec.org/c/boc/bocode/s458678.html.
+Zylkin, T. (2019), GE GRAVITY: Stata module to solve a simple general equilibrium one sector Armington-CES trade model, Statistical Software Components, Boston College Department of Economics, https://ideas.repec.org/c/boc/bocode/s458678.html.
