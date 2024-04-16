@@ -10,12 +10,12 @@ The documentation for the command is available in this [PDF](https://rolf-campos
 ### Suggested citations
 If you use this command in your work, consider citing
 ```plaintext
-Campos, Rodolfo G., Reggio, Iliana, and Jacopo Timini (2024). "GE_GRAVITY2: Stata module to solve a gravity model within the universal gravity class,"
+Campos, Rodolfo G., Iliana Reggio, and Jacopo Timini (2024). "GE_GRAVITY2: Stata module to solve a gravity model within the universal gravity class,"
 Statistical Software Components, Boston College Department of Economics, https://ideas.repec.org/c/boc/bocode/s459317.html.
 ```
 and
 ```plaintext
-Campos, Rodolfo G., Reggio, Iliana, and Jacopo Timini (2024). "ge_gravity2: a command for solving universal gravity models", mimeo.
+Campos, Rodolfo G., Iliana Reggio, and Jacopo Timini (2024). "ge_gravity2: a command for solving universal gravity models," arXiv:2404.09180.
 ```
 
 ### Installation
