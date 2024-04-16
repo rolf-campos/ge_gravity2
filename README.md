@@ -2,7 +2,7 @@
 A Stata command for solving universal gravity models
 
 ### The command
-`ge_gravity2` is a Stata command that solves and simulates a gravity models in the class of universal gravity models defined in the article by Allen et al (2020). It extends the Stata command `ge_gravity` (Baier et al 2019, Zylkin, 2019) by allowing users to compute the general equilibrium effects of changes in trade policy in models with a positive supply elasticity.
+`ge_gravity2` solves and simulates a gravity model with a positive supply elasticity, as decribed in the article by Campos, Reggio, and Timini (2024). This new command can be used to simulate any model within the universal gravity framework defined by Allen et al (2020). The `ge_gravity2` command extends a pre-existing command with the name `ge_gravity` (Baier et al 2019; Zylkin, 2019).
 
 ### Documentation
 The documentation for the command is available in this [PDF](https://rolf-campos.github.io/project/ge_gravity2/ge_gravity2.pdf) file. This file also describes a prototypical trade model belonging to the universal gravity class, and derives in a self-contained manner all the results needed to run counterfactual simulations, including a step-by-step explanation of the algorithm used to solve for price changes in equilibrium.
@@ -63,4 +63,6 @@ Allen, T., C. Arkolakis and Y. Takahashi, 2020, [Universal Gravity](https://doi.
 
 Baier, S. L., Y. V. Yotov, and T. Zylkin (2019), [On the widely differing effects of free trade agreements: Lessons from twenty years of trade integration](https://doi.org/10.1016/j.jinteco.2018.11.002), *Journal of International Economics*, 116, 206–226.
 
-Zylkin, T. (2019), GE GRAVITY: Stata module to solve a simple general equilibrium one sector Armington-CES trade model, Statistical Software Components, Boston College Department of Economics, https://ideas.repec.org/c/boc/bocode/s458678.html.
+Campos, R. G., I. Reggio, and J. Timini (2024). ge_gravity2: a command for solving universal gravity models, [arXiv:2404.09180](https://arxiv.org/abs/2404.09180).
+
+Zylkin, T. (2019), GE_GRAVITY: Stata module to solve a simple general equilibrium one sector Armington-CES trade model, Statistical Software Components, Boston College Department of Economics, https://ideas.repec.org/c/boc/bocode/s458678.html.
