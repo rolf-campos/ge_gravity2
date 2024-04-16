@@ -63,6 +63,6 @@ Allen, T., C. Arkolakis and Y. Takahashi, 2020, [Universal Gravity](https://doi.
 
 Baier, S. L., Y. V. Yotov, and T. Zylkin (2019), [On the widely differing effects of free trade agreements: Lessons from twenty years of trade integration](https://doi.org/10.1016/j.jinteco.2018.11.002), *Journal of International Economics*, 116, 206–226.
 
-Campos, R. G., I. Reggio, and J. Timini (2024). ge_gravity2: a command for solving universal gravity models, [arXiv:2404.09180](https://arxiv.org/abs/2404.09180).
+Campos, R. G., I. Reggio, and J. Timini (2024), ge_gravity2: a command for solving universal gravity models, [arXiv:2404.09180](https://arxiv.org/abs/2404.09180).
 
 Zylkin, T. (2019), GE_GRAVITY: Stata module to solve a simple general equilibrium one sector Armington-CES trade model, Statistical Software Components, Boston College Department of Economics, https://ideas.repec.org/c/boc/bocode/s458678.html.
