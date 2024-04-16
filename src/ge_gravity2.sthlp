@@ -55,9 +55,11 @@
 {marker other_options}
 {synopthdr: Other options}
 {synoptline}
-{synopt : results} prints a table with results} {p_end}
-{synopt : c_hat(matrix)} changes supply shifters} {p_end}
-{synopt : xi_hat(matrix)} changes trade deficits} {p_end}
+{synopt : results} prints a table with results {p_end}
+{synopt : c_hat(matrix)} changes supply shifters {p_end}
+{synopt : a_hat(matrix)} changes productivity {p_end}
+{synopt : l_hat(matrix)} changes the labor force {p_end}
+{synopt : xi_hat(matrix)} changes trade deficits {p_end}
 {synopt : tol(#)} sets the tolerance level to verify convergence of the price vector; must be a strictly positive real number; default is {cmd:tol(1e-12)} {p_end}
 {synopt : max_iter(#)} sets the maximum number of iterations to solve for the price vector; default is {cmd:max_iter(1000000)} {p_end}
 {synoptline}
@@ -67,7 +69,10 @@
 {title:Description}
 
 {pstd}
-{cmd:ge_gravity2} Solves and simulates a gravity model with a positive supply elasticity as described in the article by Campos, Reggio, and Timini (2024).
+{cmd:ge_gravity2} solves and simulates a gravity model with a positive supply elasticity, as decribed in the article by Campos, Reggio, and Timini (2024).
+This new command can be used to simulate any model within the universal gravity framework defined by Allen et al (2020).
+The {cmd:ge_gravity2} command extends a pre-existing command with the name {cmd:ge_gravity} (Baier et al 2019; Zylkin, 2019).  
+
 
 {title:Required variables, settings, and options}
 
@@ -130,7 +135,16 @@
 {opt r:esults} prints a table with percent changes for exports, imports, total trade, domestic trade, output, and welfare.
 
 {phang}
-{opt c_hat(matrix)} changes supply shifters (c_hat in the model). The default behavior is that all elements of c_hat are set to one.
+{opt c_hat(matrix)} changes supply shifters (c_hat in the model). Welfare will not be calculated if this option is used.  This option may not be combined with the options {opt a_hat} or {opt l_hat}.
+The default behavior is that all elements of {opt c_hat} are set to one.
+
+{phang}
+{opt a_hat(matrix)} changes productivity (A_hat in the prototypical trade model). This option may not be combined with the option {opt c_hat}.
+The default behavior is that all elements of {opt a_hat} are set to one.
+
+{phang}
+{opt l_hat(matrix)} changes the labor force (L_hat in the prototypical trade model). This option may not be combined with the option {opt c_hat}.
+The default behavior is that all elements of {opt l_hat} are set to one.
 
 {phang}
 {opt xi_hat(matrix)} changes trade deficits (xi_hat in the model). The default behavior is that all elements of xi_hat are set to one.
@@ -242,8 +256,18 @@ Madrid, Spain{break}
 {title:References}
 
 {phang}
-Campos, Rodolfo G., Reggio, Iliana, and Timini, Jacopo (2024) "ge_gravity2: a command to solve universal gravity models", mimeo.{break}
- 
+Allen, T., C. Arkolakis, and Y. Takahashi. 2020. Universal Gravity. {it:Journal of Political Economy} 128(2): 393-433.
+
+{phang}
+Campos, R. G., I. Reggio, and J. Timini. 2024. ge_gravity2: a command for solving universal gravity models, {browse "https://arxiv.org/abs/2404.09180":arXiv:2404.09180} [econ.GN].
+
+{phang}
+Baier, S. L., Y. V. Yotov, and T. Zylkin. 2019. On the widely differing effects of free trade agreements: Lessons from twenty years of trade integration. {it:Journal of International Economics} 116: 206–226.
+
+{phang}
+Zylkin, T. 2019. GE_GRAVITY: Stata module to solve a simple general equilibrium one sector Armington-CES trade model. Statistical Software Components, Boston College Department of Economics. https://ideas.repec.org/c/boc/bocode/s458678.html.
+
+{break}
 
 {phang}Update: April - 2024{p_end}
 

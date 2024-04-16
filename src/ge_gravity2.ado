@@ -2,21 +2,21 @@ program define ge_gravity2, eclass byable(recall)
 version 11.2
 
 *! A Stata command for solving universal gravity models, by Rodolfo G. Campos, Iliana Reggio, and Jacopo Timini
-*! This version: v1.0, April 2024
+*! This version: v1.1, April 2024
 *!
 *! Suggested citation: 
-*! Campos, Rodolfo G., Reggio, Iliana and Timini, Jacopo (2024), "ge_gravity2: a command to solve universal gravity models," mimeo.
+*! Campos, Rodolfo G., Iliana Reggio, and Jacopo Timini, "ge_gravity2: a command for solving universal gravity models," arXiv:2404.09180 [econ.GN].
 *! 
 *! This code is inspired and based on Tom Zylkin's program called ge_gravity.
 *! Zylkin (2019), "GE_GRAVITY: Stata module to solve a simple general equilibrium one sector Armington-CES trade model,"
 *! Statistical Software Components S458678, Boston College Department of Economics, revised 09 Sep 2021.
 *!
-*! We have tried to remain as close as possible to his notation and command usage.
+*! We have tried to remain as close as possible to his notation and command syntax.
 
 
 syntax anything [if] [in], ///
     theta(real) [psi(real 0) gen_X(name) gen_rp(name) gen_y(name) gen_x(name) gen_w(name) gen_q(name) gen_p(name) gen_P(name) ///
-    MULTiplicative Results tol(real 1e-12) max_iter(int 1000000) c_hat(string) xi_hat(string)]
+    MULTiplicative Results tol(real 1e-12) max_iter(int 1000000) c_hat(string) xi_hat(string) a_hat(string) l_hat(string)]
 
 gettoken exp_id rest  : anything
 gettoken imp_id rest  : rest
@@ -83,6 +83,17 @@ if `id_flag' != 0 {
 	exit 111
 }
 
+if "`c_hat'" != "" {
+    if "`a_hat'" != "" {
+        di in red "Error: the options c_hat and a_hat are mutually exclusive."
+        exit 184
+    }
+    if "`l_hat'" != "" {
+        di in red "Error: the options c_hat and l_hat are mutually exclusive."
+        exit 184
+    }
+}  
+
 if "`gen_X'" == ""{
 	tempname gen_X
 }
@@ -125,10 +136,10 @@ sort `exp_id' `imp_id' `_byvars'
 di "solving..."
 
 mata: ge_solver2("`X'", "`partial'", `theta', `psi', ///
-    "`gen_X'", "`gen_rp'", "`gen_y'", "`gen_x'", "`gen_w'", "`gen_q'", "`gen_p'", "`gen_P'", "`touse'", `tol', `max_iter', `by_flag', "`c_hat'", "`xi_hat'")
+    "`gen_X'", "`gen_rp'", "`gen_y'", "`gen_x'", "`gen_w'", "`gen_q'", "`gen_p'", "`gen_P'", ///
+    "`touse'", `tol', `max_iter', `by_flag', "`c_hat'", "`xi_hat'", "`a_hat'", "`l_hat'")
 
 di "solved!"
-
 
 
 if `by_flag' == 0 {
@@ -177,7 +188,8 @@ end
 mata: 
 void ge_solver2(string scalar trade, string scalar partials, real scalar theta, real scalar psi, string scalar gen1, string scalar gen2, 
                string scalar gen3, string scalar gen4, string scalar gen5, string scalar gen6, string scalar gen7, string scalar gen8,
-			   string scalar ok, real scalar tol, numeric scalar max_iter, numeric scalar by_flag, string scalar CC, string scalar XX)
+			   string scalar ok, real scalar tol, numeric scalar max_iter, numeric scalar by_flag, string scalar CC, string scalar XX,
+               string scalar AA, string scalar LL)
 
 
 {
@@ -245,30 +257,44 @@ void ge_solver2(string scalar trade, string scalar partials, real scalar theta, 
 
     /* Set up shifter vectors */
     xi_hat = J(N, 1, 1)
-    c_hat = J(N, 1, 1)
+    A_hat = J(N, 1, 1)
+    L_hat = J(N, 1, 1)
+
+    if (AA != "") {
+        printf("Using custom a_hat.\n")
+        displayas("text")
+        A_hat = st_matrix(AA)
+    }
+    if (LL != "") {
+        printf("Using custom l_hat.\n")
+        displayas("text")
+        L_hat = st_matrix(LL)
+    }
+
+    c_hat = A_hat :* L_hat
 
     if (CC != "") {
-        printf("Using custom c_hat.\n")
+        printf("Using custom c_hat. Welfare is undefined.\n")
         displayas("text")
         c_hat = st_matrix(CC)
     }
+    
     if (XX != "") {
         printf("Using custom xi_hat.\n")
         displayas("text")
         xi_hat = st_matrix(XX)
     }
 
-    /* Initialize p_hat = P_hat = 1/N */
-    p_hat = J(N, 1, 1/N)
-    P_hat = J(N, 1, 1/N)
-    p_hat_crit = p_hat
+    /* Initialize p_hat = P_hat = 1 */
+    p_hat = J(N, 1, 1)
+    P_hat = J(N, 1, 1)
 
     /* Step 1. Compute price vectors */
     crit = 1
     j = 0
 
     do {  
-        p_last_step = p_hat_crit
+        p_hat_last_step = p_hat
 
         /* Step 1.1: update Xi_hat */
         Xi_hat = Ybar / sum(xi_hat :* c_hat :* p_hat :* (p_hat :/ P_hat):^psi :* E)
@@ -281,20 +307,17 @@ void ge_solver2(string scalar trade, string scalar partials, real scalar theta, 
         part5 = (P_hat :^ (theta - psi))' # J(N, 1, 1)
         part6 = (p_hat :^ (1 + psi))' # J(N, 1, 1)
         p_hat = (Xi_hat :* part1 :* rowsum(part2 :* part3 :* part4 :* part5 :* part6)) :^ (1/(1+theta+psi))
-        
-        /* Step 1.3: normalize p_hat for the convergence criterion */
-        p_hat_crit = p_hat :/ sum(p_hat)
 
-        /* Step 1.4: update P_hat */
+        /* Step 1.3: update P_hat */
         Part1 = X :/ (E' # J(N, 1, 1))
         Part2 = B
         Part3 = (p_hat # J(1, N, 1)) :^ (-theta)
         P_hat = colsum(Part1 :* Part2 :* Part3)' :^ (-1/theta)
         
-        /* Step 1.5: check convergence */
-        crit = max(abs(p_hat_crit - p_last_step))
+        /* Step 1.4: check convergence */
+        crit = max(abs(p_hat - p_hat_last_step))
 
-        /* Step 1.6: if convergence was not achieved, increase counter and repeat */
+        /* Step 1.5: if convergence was not achieved, increase counter and repeat */
         j = j + 1
 
     } while (crit > tol & j < max_iter)
@@ -319,8 +342,14 @@ void ge_solver2(string scalar trade, string scalar partials, real scalar theta, 
     P_hat_gen = P_hat # J(N, 1, 1)
 
     /* Compute quantities relevant only for the prototypical trade model */
-    welfare_hat = c_hat :* (p_P :^ (1+psi))
     output_hat = c_hat :* (p_P :^ (psi))
+    welfare_hat = A_hat :* (p_P :^ (1+psi))
+
+    /* Set welfare to missing if the option c_hat was used */
+    if (CC != "") {
+        welfare_hat = J(rows(welfare_hat), cols(welfare_hat), missingof(welfare_hat))
+    }
+    
     welfare_hat_gen = welfare_hat # J(N, 1, 1)
     output_hat_gen = output_hat # J(N, 1, 1)
 
