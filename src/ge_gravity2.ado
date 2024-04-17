@@ -16,7 +16,7 @@ version 11.2
 
 syntax anything [if] [in], ///
     theta(real) [psi(real 0) gen_X(name) gen_rp(name) gen_y(name) gen_x(name) gen_w(name) gen_q(name) gen_p(name) gen_P(name) ///
-    MULTiplicative Results tol(real 1e-12) max_iter(int 1000000) c_hat(string) xi_hat(string) a_hat(string) l_hat(string)]
+    MULTiplicative ADDitive Results tol(real 1e-12) max_iter(int 1000000) c_hat(string) xi_hat(string) a_hat(string) l_hat(string)]
 
 gettoken exp_id rest  : anything
 gettoken imp_id rest  : rest
@@ -29,7 +29,17 @@ ereturn clear
 
 // Warn user if they choose the multiplicative option
 if "`multiplicative'" != "" {
-    di in green "Note: You have specified the multiplicative option. This option does not have any effect in ge_gravity2."
+    di in green "Note: You have specified the multiplicative option. This option is the default choice in ge_gravity2."
+}
+
+// Check if the program is run with additive option and set the additive_flag to one in that case
+local additive_flag = 0
+if "`additive'" != "" {
+    if "`xi_hat'" != "" {
+        di in red "Error: the options xi_hat and additive are mutually exclusive."
+        exit 184
+    }
+    local additive_flag = 1
 }
 
 // Check if the program is run with the by command and set the by_flag to one in that case
@@ -137,7 +147,7 @@ di "solving..."
 
 mata: ge_solver2("`X'", "`partial'", `theta', `psi', ///
     "`gen_X'", "`gen_rp'", "`gen_y'", "`gen_x'", "`gen_w'", "`gen_q'", "`gen_p'", "`gen_P'", ///
-    "`touse'", `tol', `max_iter', `by_flag', "`c_hat'", "`xi_hat'", "`a_hat'", "`l_hat'")
+    "`touse'", `tol', `max_iter', `by_flag', `additive_flag', "`c_hat'", "`xi_hat'", "`a_hat'", "`l_hat'")
 
 di "solved!"
 
@@ -188,8 +198,8 @@ end
 mata: 
 void ge_solver2(string scalar trade, string scalar partials, real scalar theta, real scalar psi, string scalar gen1, string scalar gen2, 
                string scalar gen3, string scalar gen4, string scalar gen5, string scalar gen6, string scalar gen7, string scalar gen8,
-			   string scalar ok, real scalar tol, numeric scalar max_iter, numeric scalar by_flag, string scalar CC, string scalar XX,
-               string scalar AA, string scalar LL)
+			   string scalar ok, real scalar tol, numeric scalar max_iter, numeric scalar by_flag, numeric scalar additive_flag,
+               string scalar CC, string scalar XX, string scalar AA, string scalar LL)
 
 
 {
@@ -255,6 +265,10 @@ void ge_solver2(string scalar trade, string scalar partials, real scalar theta, 
     Y = rowsum(X)
     Ybar = sum(X)
 
+    /* Compute trade deficits and deficits as a share of income  */
+    D = E :- Y
+    delta = D :/ Y
+
     /* Set up shifter vectors */
     xi_hat = J(N, 1, 1)
     A_hat = J(N, 1, 1)
@@ -285,9 +299,10 @@ void ge_solver2(string scalar trade, string scalar partials, real scalar theta, 
         xi_hat = st_matrix(XX)
     }
 
-    /* Initialize p_hat = P_hat = 1 */
+    /* Initialize p_hat = P_hat = Xi_hat = 1 */
     p_hat = J(N, 1, 1)
     P_hat = J(N, 1, 1)
+    Xi_hat = 1
 
     /* Step 1. Compute price vectors */
     crit = 1
@@ -296,9 +311,17 @@ void ge_solver2(string scalar trade, string scalar partials, real scalar theta, 
     do {  
         p_hat_last_step = p_hat
 
+        /* Step 1.05: update xi_hat if deficits are additive */
+        if (additive_flag == 1) {
+            /* Xi_hat = 1 */
+            Y_hat = c_hat :* p_hat :* ((p_hat :/ P_hat) :^ psi)
+            delta_hat = J(N, 1, 1) :/ Y_hat
+            xi_hat = (1/Xi_hat) :* (J(N, 1, 1) :+ (delta :/ (J(N, 1, 1) :+ delta)) :* (delta_hat :- J(N, 1, 1)))
+        }
+
         /* Step 1.1: update Xi_hat */
         Xi_hat = Ybar / sum(xi_hat :* c_hat :* p_hat :* (p_hat :/ P_hat):^psi :* E)
-        
+
         /* Step 1.2: update p_hat */ 	
         part1 = (P_hat :^ (psi)) :/ c_hat
         part2 = X :/ (Y # J(1, N, 1))
@@ -343,7 +366,7 @@ void ge_solver2(string scalar trade, string scalar partials, real scalar theta, 
 
     /* Compute quantities relevant only for the prototypical trade model */
     output_hat = c_hat :* (p_P :^ (psi))
-    welfare_hat = A_hat :* (p_P :^ (1+psi))
+    welfare_hat = Xi_hat:* xi_hat:* A_hat :* (p_P :^ (1+psi))
 
     /* Set welfare to missing if the option c_hat was used */
     if (CC != "") {

@@ -55,7 +55,8 @@
 {marker other_options}
 {synopthdr: Other options}
 {synoptline}
-{synopt : results} prints a table with results {p_end}
+{synopt : {opt r:esults}} prints a table with results {p_end}
+{synopt : {opt add:itive}} assumes constant additive trade deficits {p_end}
 {synopt : c_hat(matrix)} changes supply shifters {p_end}
 {synopt : a_hat(matrix)} changes productivity {p_end}
 {synopt : l_hat(matrix)} changes the labor force {p_end}
@@ -135,6 +136,9 @@ The {cmd:ge_gravity2} command extends a pre-existing command with the name {cmd:
 {opt r:esults} prints a table with percent changes for exports, imports, total trade, domestic trade, output, and welfare.
 
 {phang}
+{opt add:itive}  computes the counterfactual assuming constant additive trade deficits, as done by default by the {cmd:ge_gravity} command. This option may not be combined with the option {opt xi_hat}.
+
+{phang}
 {opt c_hat(matrix)} changes supply shifters (c_hat in the model). Welfare will not be calculated if this option is used.  This option may not be combined with the options {opt a_hat} or {opt l_hat}.
 The default behavior is that all elements of {opt c_hat} are set to one.
 
@@ -147,19 +151,22 @@ The default behavior is that all elements of {opt a_hat} are set to one.
 The default behavior is that all elements of {opt l_hat} are set to one.
 
 {phang}
-{opt xi_hat(matrix)} changes trade deficits (xi_hat in the model). The default behavior is that all elements of xi_hat are set to one.
+{opt xi_hat(matrix)} changes trade deficits (xi_hat in the model). This option may not be combined with {opt additive} option.
+The default behavior is that all elements of xi_hat are set to one.
 
 {phang}
-{opt tol(#)} sets the tolerance level to verify convergence of the price vector; must be a strictly positive real number; the default is  {opt tol(1e-12)}
+{opt tol(#)} sets the tolerance level to verify convergence of the vector of output price changes. The tolerance level must be a strictly positive real number.
+The default is {opt tol(1e-12)}
 
 {phang}
-{opt max_iter(#)} sets the maximum number of iterations to solve for the price vector; must be a positive integer; the default is {opt max_iter(1000000)}
+{opt max_iter(#)} sets the maximum number of iterations to solve for the vector of output price changes. The maximum number of iterations must be a positive integer.
+The default is {opt max_iter(1000000)}
 
 
 {title:Remarks}
 
 {p 4 4 2}
-The data must be a square database (i.e., the number of exporters must be the same as the numbers importers and their identities must coincide). 
+The data must be a square database (i.e., the number of exporters must be the same as the numbers importers and their identities must coincide).
 The data set must contain a string of numeric variable that identifies exporters and an additional variable of the same kind to identify importers.
 Bilateral trade values must be nonnegative.
 
