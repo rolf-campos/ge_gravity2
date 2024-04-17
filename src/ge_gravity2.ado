@@ -2,7 +2,7 @@ program define ge_gravity2, eclass byable(recall)
 version 11.2
 
 *! A Stata command for solving universal gravity models, by Rodolfo G. Campos, Iliana Reggio, and Jacopo Timini
-*! This version: v1.1, April 2024
+*! This version: v2.0, April 2024
 *!
 *! Suggested citation: 
 *! Campos, Rodolfo G., Iliana Reggio, and Jacopo Timini, "ge_gravity2: a command for solving universal gravity models," arXiv:2404.09180 [econ.GN].
@@ -313,7 +313,6 @@ void ge_solver2(string scalar trade, string scalar partials, real scalar theta, 
 
         /* Step 1.05: update xi_hat if deficits are additive */
         if (additive_flag == 1) {
-            /* Xi_hat = 1 */
             Y_hat = c_hat :* p_hat :* ((p_hat :/ P_hat) :^ psi)
             delta_hat = J(N, 1, 1) :/ Y_hat
             xi_hat = (1/Xi_hat) :* (J(N, 1, 1) :+ (delta :/ (J(N, 1, 1) :+ delta)) :* (delta_hat :- J(N, 1, 1)))
@@ -366,7 +365,7 @@ void ge_solver2(string scalar trade, string scalar partials, real scalar theta, 
 
     /* Compute quantities relevant only for the prototypical trade model */
     output_hat = c_hat :* (p_P :^ (psi))
-    welfare_hat = Xi_hat:* xi_hat:* A_hat :* (p_P :^ (1+psi))
+    welfare_hat = Xi_hat :* xi_hat :* A_hat :* (p_P :^ (1+psi))
 
     /* Set welfare to missing if the option c_hat was used */
     if (CC != "") {
