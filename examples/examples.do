@@ -100,7 +100,7 @@ gen border_Spain = border * (iso_o == "ESP" | iso_d == "ESP")
 gen partial_effect = (beta_Spain - beta_Synthetic_Spain) * border_Spain
 
 ** 4. Obtain the general equilibrium effect for different values of the supply elasticity
-//    Campos, Reggio, and Timini (2023) use use a trade elasticity of 4.
+//    Campos, Reggio, and Timini (2023) use a trade elasticity of 4.
 //    They (implicitly) use a supply elasticity of zero.
 //    We use the by prefix to calculate welfare for all years.
 bys year: ge_gravity2 iso_o iso_d flow partial_effect, theta(4) psi(0) gen_w(W0)
