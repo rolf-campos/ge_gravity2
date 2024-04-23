@@ -15,8 +15,9 @@ version 11.2
 
 
 syntax anything [if] [in], ///
-    theta(real) [psi(real 0) gen_X(name) gen_rp(name) gen_y(name) gen_x(name) gen_w(name) gen_q(name) gen_p(name) gen_P(name) ///
-    MULTiplicative ADDitive Results tol(real 1e-12) max_iter(int 1000000) c_hat(string) xi_hat(string) a_hat(string) l_hat(string)]
+    theta(real) [psi(real 0) ///
+    gen_X(name) gen_rp(name) gen_y(name) gen_x(name) gen_w(name) gen_q(name) gen_p(name) gen_P(name) gen_rw(name) gen_nw(name) ///
+    MULTiplicative UNIversal ADDitive Results tol(real 1e-12) max_iter(int 1000000) c_hat(string) xi_hat(string) a_hat(string) l_hat(string)]
 
 gettoken exp_id rest  : anything
 gettoken imp_id rest  : rest
@@ -27,20 +28,34 @@ qui marksample touse
 
 ereturn clear
 
-// Warn user if they choose the multiplicative option
-if "`multiplicative'" != "" {
-    di in green "Note: You have specified the multiplicative option. This option is the default choice in ge_gravity2."
+// Inform user if they choose the additive option
+if "`additive'" != "" {
+    di in green "Note: You have specified the additive option. This option is the default choice in ge_gravity2."
 }
 
-// Check if the program is run with additive option and set the additive_flag to one in that case
-local additive_flag = 0
-if "`additive'" != "" {
-    if "`xi_hat'" != "" {
-        di in red "Error: the options xi_hat and additive are mutually exclusive."
-        exit 184
-    }
-    local additive_flag = 1
+// Default option: additive
+local additive_flag = 1
+local universal_flag = 0
+local multiplicative_flag = 0
+
+// Change flags if the program is run with universal option
+if "`universal'" != "" {
+    local additive_flag = 0
+    local universal_flag = 1
 }
+
+// Change flags if the program is run with multiplicative option
+if "`multiplicative'" != "" {
+    local additive_flag = 0
+    local multiplicative_flag = 1
+}
+
+// Check if xi_hat is run with the univeral option
+if "`xi_hat'" != "" & `universal_flag' == 0  {
+    di in red "Error: the option xi_hat can only be chosen with the universal option."
+    exit 184
+}
+
 
 // Check if the program is run with the by command and set the by_flag to one in that case
 local by_flag = 0
@@ -128,7 +143,12 @@ if "`gen_p'" == ""{
 if "`gen_P'" == ""{
     tempname gen_P
 }
-
+if "`gen_rw'" == ""{
+    tempname gen_rw
+}
+if "`gen_nw'" == ""{
+    tempname gen_nw
+}
 
 cap gen `gen_X' = .
 cap gen `gen_rp' = .
@@ -138,6 +158,8 @@ cap gen `gen_w'  = .
 cap gen `gen_q' = .
 cap gen `gen_p' = .
 cap gen `gen_P' = .
+cap gen `gen_rw' = .
+cap gen `gen_nw' = .
 
 di "sorting..."
 
@@ -146,8 +168,8 @@ sort `exp_id' `imp_id' `_byvars'
 di "solving..."
 
 mata: ge_solver2("`X'", "`partial'", `theta', `psi', ///
-    "`gen_X'", "`gen_rp'", "`gen_y'", "`gen_x'", "`gen_w'", "`gen_q'", "`gen_p'", "`gen_P'", ///
-    "`touse'", `tol', `max_iter', `by_flag', `additive_flag', "`c_hat'", "`xi_hat'", "`a_hat'", "`l_hat'")
+    "`gen_X'", "`gen_rp'", "`gen_y'", "`gen_x'", "`gen_w'", "`gen_q'", "`gen_p'", "`gen_P'", "`gen_rw'", "`gen_nw'", ///
+    "`touse'", `tol', `max_iter', `by_flag', `additive_flag', `multiplicative_flag', "`c_hat'", "`xi_hat'", "`a_hat'", "`l_hat'")
 
 di "solved!"
 
@@ -198,8 +220,8 @@ end
 mata: 
 void ge_solver2(string scalar trade, string scalar partials, real scalar theta, real scalar psi, string scalar gen1, string scalar gen2, 
                string scalar gen3, string scalar gen4, string scalar gen5, string scalar gen6, string scalar gen7, string scalar gen8,
-			   string scalar ok, real scalar tol, numeric scalar max_iter, numeric scalar by_flag, numeric scalar additive_flag,
-               string scalar CC, string scalar XX, string scalar AA, string scalar LL)
+			   string scalar gen9, string scalar gen10, string scalar ok, real scalar tol, numeric scalar max_iter, numeric scalar by_flag,
+               numeric scalar additive_flag, numeric scalar multiplicative_flag, string scalar CC, string scalar XX, string scalar AA, string scalar LL)
 
 
 {
@@ -344,6 +366,11 @@ void ge_solver2(string scalar trade, string scalar partials, real scalar theta, 
 
     } while (crit > tol & j < max_iter)
 
+    /* Re-scale Xi_hat for the multiplicative option */
+    if (multiplicative_flag == 1) {
+        Xi_hat = 1
+    }
+
     /* Compute change in income (a vector) */
     Y_hat = c_hat :* p_hat :* ((p_hat :/ P_hat) :^ psi)
 
@@ -366,14 +393,20 @@ void ge_solver2(string scalar trade, string scalar partials, real scalar theta, 
     /* Compute quantities relevant only for the prototypical trade model */
     output_hat = c_hat :* (p_P :^ (psi))
     welfare_hat = Xi_hat :* xi_hat :* A_hat :* (p_P :^ (1+psi))
+    rw_hat = A_hat :* (p_P :^ (1+psi))
+    nw_hat = rw_hat :* P_hat
 
-    /* Set welfare to missing if the option c_hat was used */
+    /* Set welfare and the (real and nominal) wage to missing if the option c_hat was used */
     if (CC != "") {
         welfare_hat = J(rows(welfare_hat), cols(welfare_hat), missingof(welfare_hat))
+        rw_hat = J(rows(rw_hat), cols(rw_hat), missingof(rw_hat))
+        nw_hat = J(rows(nw_hat), cols(nw_hat), missingof(nw_hat))
     }
     
     welfare_hat_gen = welfare_hat # J(N, 1, 1)
     output_hat_gen = output_hat # J(N, 1, 1)
+    rw_hat_gen = rw_hat # J(N, 1, 1)
+    nw_hat_gen = nw_hat # J(N, 1, 1)
 
     /* Post results to Stata */
     st_store(., tokens(gen1), ok, X_new_gen)
@@ -384,6 +417,8 @@ void ge_solver2(string scalar trade, string scalar partials, real scalar theta, 
     st_store(., tokens(gen6), ok, output_hat_gen)
     st_store(., tokens(gen7), ok, p_hat_gen)
     st_store(., tokens(gen8), ok, P_hat_gen)
+    st_store(., tokens(gen9), ok, rw_hat_gen)
+    st_store(., tokens(gen10), ok, nw_hat_gen)
 
     /* Generate stored results (ereturn elements) */
     st_numscalar("e(theta)", theta)

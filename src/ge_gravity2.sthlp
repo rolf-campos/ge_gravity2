@@ -51,12 +51,15 @@
 
 {synopt : gen_w(varname)} generates the change in welfare (W_hat) {p_end}
 {synopt : gen_q(varname)} generates the change in output (Q_hat) {p_end}
+{synopt : gen_rw(varname)} generates the change in real wages (w_hat/P_hat) {p_end}
+{synopt : gen_nw(varname)} generates the change in nominal wages (w_hat) {p_end}
 {synoptline}
 {marker other_options}
 {synopthdr: Other options}
 {synoptline}
 {synopt : {opt r:esults}} prints a table with results {p_end}
-{synopt : {opt add:itive}} assumes constant additive trade deficits {p_end}
+{synopt : {opt uni:versal}} assumes universal trade deficits {p_end}
+{synopt : {opt mult:iplicative}} assumes trade deficits that imply E_hat = Y_hat {p_end}
 {synopt : c_hat(matrix)} changes supply shifters {p_end}
 {synopt : a_hat(matrix)} changes productivity {p_end}
 {synopt : l_hat(matrix)} changes the labor force {p_end}
@@ -129,6 +132,12 @@ The {cmd:ge_gravity2} command extends a pre-existing command with the name {cmd:
 {phang}
 {opt gen_q(varname)} generates the change in output (Q_hat in the model) and places the result in a new variable called {it:varname} or overwrites this variable if it already exists.
 
+{phang}
+{opt gen_rw(varname)} generates the change in real wages (w_hat/P_hat in the model) and places the result in a new variable called {it:varname} or overwrites this variable if it already exists.
+
+{phang}
+{opt gen_nw(varname)} generates the change in nominal wages (w_hat in the model) and places the result in a new variable called {it:varname} or overwrites this variable if it already exists.
+
 
 {dlgtab: Other options}
 
@@ -136,23 +145,26 @@ The {cmd:ge_gravity2} command extends a pre-existing command with the name {cmd:
 {opt r:esults} prints a table with percent changes for exports, imports, total trade, domestic trade, output, and welfare.
 
 {phang}
-{opt add:itive}  computes the counterfactual assuming constant additive trade deficits, as done by default by the {cmd:ge_gravity} command. This option may not be combined with the option {opt xi_hat}.
+{opt uni:versal} solves the model with universal trade deficits and allows the user to set the option {opt xi_hat}.
 
 {phang}
-{opt c_hat(matrix)} changes supply shifters (c_hat in the model). Welfare will not be calculated if this option is used.  This option may not be combined with the options {opt a_hat} or {opt l_hat}.
-The default behavior is that all elements of {opt c_hat} are set to one.
+{opt mult:iplicative} solves the model for trade deficits that imply E_hat = Y_hat (for backward compatibility with the multiplicative option of the {cmd: ge_gravity} command).
+
+{phang}
+{opt c_hat(matrix)} changes supply shifters (c_hat in the model). Welfare will not be calculated if this option is used. This option may not be combined with the options {opt a_hat} or {opt l_hat}.
+The default is that all elements of {opt c_hat} are set to one.
 
 {phang}
 {opt a_hat(matrix)} changes productivity (A_hat in the prototypical trade model). This option may not be combined with the option {opt c_hat}.
-The default behavior is that all elements of {opt a_hat} are set to one.
+The default is that all elements of {opt a_hat} are set to one.
 
 {phang}
 {opt l_hat(matrix)} changes the labor force (L_hat in the prototypical trade model). This option may not be combined with the option {opt c_hat}.
-The default behavior is that all elements of {opt l_hat} are set to one.
+The default is that all elements of {opt l_hat} are set to one.
 
 {phang}
-{opt xi_hat(matrix)} changes trade deficits (xi_hat in the model). This option may not be combined with {opt additive} option.
-The default behavior is that all elements of xi_hat are set to one.
+{opt xi_hat(matrix)} changes trade deficits (xi_hat in the model). This option must be used in combination with the {opt universal} option.
+If the {opt universal} option is selected and the {opt xi_hat} option is not used, then the command defaults to setting all elements of xi_hat to one.
 
 {phang}
 {opt tol(#)} sets the tolerance level to verify convergence of the vector of output price changes. The tolerance level must be a strictly positive real number.
