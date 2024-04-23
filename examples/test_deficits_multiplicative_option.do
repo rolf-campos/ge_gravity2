@@ -21,8 +21,8 @@ replace nafta = 1 if iso_o == "USA" & (iso_d == "CAN" | iso_d == "MEX")
 gen partial_effect = `beta' * (-nafta)  // equals -beta for NAFTA pairs, 0 otherwise.
 
 ** 3. Obtain general equilibrium effects of dissolving NAFTA
-ge_gravity iso_o iso_d flow partial_effect, theta(5.03) gen_X(X1) gen_w(W1) gen_nw(nw1) gen_rw(rw1) gen_P(P1)
-ge_gravity2 iso_o iso_d flow partial_effect, theta(5.03) psi(0) gen_X(X2) gen_w(W2) gen_nw(nw2) gen_rw(rw2) gen_P(P2)
+ge_gravity iso_o iso_d flow partial_effect, theta(5.03) gen_X(X1) gen_w(W1) gen_nw(nw1) gen_rw(rw1) gen_P(P1) multiplicative
+ge_gravity2 iso_o iso_d flow partial_effect, theta(5.03) psi(0) gen_X(X2) gen_nw(nw2) gen_rw(rw2) gen_P(P2) gen_w(W2) multiplicative
 di e(Xi_hat)
 
 ** 4. Calculate the absolute log-difference in welfare and report the maximum
@@ -59,13 +59,31 @@ mata: max(abs(st_data(., "nw_diff")))
 gen rw_diff = abs(ln(rw2) - ln(rw1))
 mata: max(abs(st_data(., "rw_diff")))
 
-/*
-** 12. Run command with positive psi and check that deficits are constant
-ge_gravity2 iso_o iso_d flow partial_effect, theta(5.03) psi(1.24) gen_X(X2) gen_P(P2) gen_w(W2) additive
 
-* Calculate trade deficits in the baseline and counterfactual and report maximum discrepancy
+** 12. 
+ge_gravity2 iso_o iso_d flow partial_effect, theta(5.03) psi(1.24) multiplicative
 mata : st_matrix("D", st_matrix("e(E)") - st_matrix("e(Y)"))
 mata : st_matrix("D_prime", st_matrix("e(E_prime)") - st_matrix("e(Y_prime)"))
-mata: st_matrix("D_diff", st_matrix("D_prime") - st_matrix("D"))
-mata: max(abs(st_matrix("D_diff")))
+
+matrix TABLE = (D, D_prime, e(E_hat), e(Y_hat))
+matrix rownames TABLE = `e(names)'
+matrix colnames TABLE = D D_prime E_hat Y_hat
+matlist TABLE
+
+/*
+** 10. Run command with positive psi and check that delta_prime - delta = (Xi_hat * xi_hat - 1) * (E/Y)
+ge_gravity2 iso_o iso_d flow partial_effect, theta(5.03) psi(1.24) gen_X(X2) gen_P(P2) gen_w(W2)  multiplicative
+mata : st_matrix("D", st_matrix("e(E)") - st_matrix("e(Y)"))
+mata : st_matrix("D_prime", st_matrix("e(E_prime)") - st_matrix("e(Y_prime)"))
+mata: st_matrix("delta", st_matrix("D") :/ st_matrix("e(Y)"))
+mata: st_matrix("delta_prime", st_matrix("D_prime") :/ st_matrix("e(Y_prime)"))
+mata: st_matrix("delta_diff", st_matrix("delta_prime") - st_matrix("delta"))
+mata: st_matrix("delta_diff", st_matrix("delta_prime") - st_matrix("delta"))
+mata: st_matrix("E_Y", st_matrix("e(E)") :/ st_matrix("e(Y)"))
+matrix delta_diff_theory = (e(Xi_hat) - 1) * E_Y  // simplified formula because xi_hat is all ones in this case
+mata: st_matrix("delta_diff", st_matrix("delta_prime") - st_matrix("delta"))
+matrix TABLE = (delta_prime, delta, delta_diff, delta_diff_theory)
+matrix rownames TABLE = `e(names)'
+matrix colnames TABLE = delta_prime delta diff theory
+matlist TABLE
 */
