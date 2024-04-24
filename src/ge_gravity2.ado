@@ -2,7 +2,7 @@ program define ge_gravity2, eclass byable(recall)
 version 11.2
 
 *! A Stata command for solving universal gravity models, by Rodolfo G. Campos, Iliana Reggio, and Jacopo Timini
-*! This version: v2.0, April 2024
+*! This version: v3.0, April 2024
 *!
 *! Suggested citation: 
 *! Campos, Rodolfo G., Iliana Reggio, and Jacopo Timini, "ge_gravity2: a command for solving universal gravity models," arXiv:2404.09180 [econ.GN].
@@ -11,13 +11,13 @@ version 11.2
 *! Zylkin (2019), "GE_GRAVITY: Stata module to solve a simple general equilibrium one sector Armington-CES trade model,"
 *! Statistical Software Components S458678, Boston College Department of Economics, revised 09 Sep 2021.
 *!
-*! We have tried to remain as close as possible to his notation and command syntax.
+*! We thank Tom Zylkin for his suggestions on how to improve early versions of this code.
 
 
 syntax anything [if] [in], ///
     theta(real) [psi(real 0) ///
     gen_X(name) gen_rp(name) gen_y(name) gen_x(name) gen_w(name) gen_q(name) gen_p(name) gen_P(name) gen_rw(name) gen_nw(name) ///
-    MULTiplicative UNIversal ADDitive Results tol(real 1e-12) max_iter(int 1000000) c_hat(string) xi_hat(string) a_hat(string) l_hat(string)]
+    MULTiplicative UNIversal Results tol(real 1e-12) max_iter(int 1000000) c_hat(string) xi_hat(string) a_hat(string) l_hat(string)]
 
 gettoken exp_id rest  : anything
 gettoken imp_id rest  : rest
@@ -27,11 +27,6 @@ gettoken partial   close : rest
 qui marksample touse
 
 ereturn clear
-
-// Inform user if they choose the additive option
-if "`additive'" != "" {
-    di in green "Note: You have specified the additive option. This option is the default choice in ge_gravity2."
-}
 
 // Default option: additive
 local additive_flag = 1
@@ -50,12 +45,17 @@ if "`multiplicative'" != "" {
     local multiplicative_flag = 1
 }
 
-// Check if xi_hat is run with the univeral option
+// Check that options do not clash
+if `multiplicative_flag' + `universal_flag' > 1  {
+    di in red "Error: the options universal and multiplicative are mutually exclusive."
+    exit 184
+}
+
+// Check if xi_hat is run with the universal option
 if "`xi_hat'" != "" & `universal_flag' == 0  {
     di in red "Error: the option xi_hat can only be chosen with the universal option."
     exit 184
 }
-
 
 // Check if the program is run with the by command and set the by_flag to one in that case
 local by_flag = 0
@@ -326,24 +326,26 @@ void ge_solver2(string scalar trade, string scalar partials, real scalar theta, 
     P_hat = J(N, 1, 1)
     Xi_hat = 1
 
-    /* Step 1. Compute price vectors */
+    /* Algorithm to compute price vectors */
     crit = 1
     j = 0
 
     do {  
         p_hat_last_step = p_hat
 
-        /* Step 1.05: update xi_hat if deficits are additive */
         if (additive_flag == 1) {
+            /* Step 0.5: update xi_hat if deficits are additive */
             Y_hat = c_hat :* p_hat :* ((p_hat :/ P_hat) :^ psi)
             delta_hat = J(N, 1, 1) :/ Y_hat
             xi_hat = (1/Xi_hat) :* (J(N, 1, 1) :+ (delta :/ (J(N, 1, 1) :+ delta)) :* (delta_hat :- J(N, 1, 1)))
         }
+        
+        /* Step 1: update Xi_hat using properties 5 and 6 */
+        if (multiplicative_flag == 0) {
+            Xi_hat = Ybar / sum(xi_hat :* c_hat :* p_hat :* (p_hat :/ P_hat):^psi :* E)
+        }
 
-        /* Step 1.1: update Xi_hat */
-        Xi_hat = Ybar / sum(xi_hat :* c_hat :* p_hat :* (p_hat :/ P_hat):^psi :* E)
-
-        /* Step 1.2: update p_hat */ 	
+        /* Step 2: update p_hat */ 	
         part1 = (P_hat :^ (psi)) :/ c_hat
         part2 = X :/ (Y # J(1, N, 1))
         part3 = B
@@ -352,24 +354,26 @@ void ge_solver2(string scalar trade, string scalar partials, real scalar theta, 
         part6 = (p_hat :^ (1 + psi))' # J(N, 1, 1)
         p_hat = (Xi_hat :* part1 :* rowsum(part2 :* part3 :* part4 :* part5 :* part6)) :^ (1/(1+theta+psi))
 
-        /* Step 1.3: update P_hat */
+        /* Step 3: update P_hat */
         Part1 = X :/ (E' # J(N, 1, 1))
         Part2 = B
         Part3 = (p_hat # J(1, N, 1)) :^ (-theta)
         P_hat = colsum(Part1 :* Part2 :* Part3)' :^ (-1/theta)
+
+        if (multiplicative_flag == 1) {
+            /* Step 3.5: normalize prices using property 6 if deficits are multiplicative */
+            rho = sum(c_hat :* p_hat :* (p_hat :/ P_hat):^psi :* Y) / Ybar
+            p_hat = p_hat :/ rho
+            P_hat = P_hat :/ rho
+        }
         
-        /* Step 1.4: check convergence */
+        /* Step 4: check convergence */
         crit = max(abs(p_hat - p_hat_last_step))
 
-        /* Step 1.5: if convergence was not achieved, increase counter and repeat */
+        /* Step 5: if convergence was not achieved, increase counter and repeat */
         j = j + 1
 
     } while (crit > tol & j < max_iter)
-
-    /* Re-scale Xi_hat for the multiplicative option */
-    if (multiplicative_flag == 1) {
-        Xi_hat = 1
-    }
 
     /* Compute change in income (a vector) */
     Y_hat = c_hat :* p_hat :* ((p_hat :/ P_hat) :^ psi)

@@ -50,7 +50,7 @@
 {syntab: {it:Prototypical trade model}}
 
 {synopt : gen_w(varname)} generates the change in welfare (W_hat) {p_end}
-{synopt : gen_q(varname)} generates the change in output (Q_hat) {p_end}
+{synopt : gen_q(varname)} generates the change in real output (Q_hat) {p_end}
 {synopt : gen_rw(varname)} generates the change in real wages (w_hat/P_hat) {p_end}
 {synopt : gen_nw(varname)} generates the change in nominal wages (w_hat) {p_end}
 {synoptline}
@@ -130,7 +130,7 @@ The {cmd:ge_gravity2} command extends a pre-existing command with the name {cmd:
 {opt gen_w(varname)} generates the change in welfare (W_hat in the model) and places the result in a new variable called {it:varname} or overwrites this variable if it already exists.
 
 {phang}
-{opt gen_q(varname)} generates the change in output (Q_hat in the model) and places the result in a new variable called {it:varname} or overwrites this variable if it already exists.
+{opt gen_q(varname)} generates the change in real output (Q_hat in the model) and places the result in a new variable called {it:varname} or overwrites this variable if it already exists.
 
 {phang}
 {opt gen_rw(varname)} generates the change in real wages (w_hat/P_hat in the model) and places the result in a new variable called {it:varname} or overwrites this variable if it already exists.
@@ -142,7 +142,7 @@ The {cmd:ge_gravity2} command extends a pre-existing command with the name {cmd:
 {dlgtab: Other options}
 
 {phang}
-{opt r:esults} prints a table with percent changes for exports, imports, total trade, domestic trade, output, and welfare.
+{opt r:esults} prints a table with percent changes for exports, imports, total trade, domestic trade, real output, and welfare.
 
 {phang}
 {opt uni:versal} solves the model with universal trade deficits and allows the user to set the option {opt xi_hat}.
