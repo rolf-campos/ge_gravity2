@@ -2,7 +2,7 @@
 A Stata command for solving universal gravity models
 
 ### The command
-`ge_gravity2` solves and simulates a gravity model with a positive supply elasticity, as decribed in the article by Campos, Reggio, and Timini (2024). This new command can be used to simulate any model within the universal gravity framework defined by Allen et al (2020). The `ge_gravity2` command extends a pre-existing command with the name `ge_gravity` (Baier et al 2019; Zylkin, 2019).
+`ge_gravity2` solves and simulates a gravity model with a positive supply elasticity, as decribed in the article by [Campos, Reggio, and Timini (2024)](https://rolf-campos.github.io/project/ge_gravity2/ge_gravity2.pdf). This new command can be used to simulate any model within the universal gravity framework defined by Allen et al (2020). The `ge_gravity2` command extends a pre-existing command with the name `ge_gravity` (Baier et al 2019; Zylkin, 2019).
 
 ### Documentation
 The documentation for the command is available in this [PDF](https://rolf-campos.github.io/project/ge_gravity2/ge_gravity2.pdf) file. This file also describes a prototypical trade model belonging to the universal gravity class, and derives in a self-contained manner all the results needed to run counterfactual simulations, including a step-by-step explanation of the algorithm used to solve for price changes in equilibrium.
