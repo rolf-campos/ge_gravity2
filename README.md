@@ -2,10 +2,10 @@
 A Stata command for solving universal gravity models
 
 ### The command
-`ge_gravity2` solves and simulates a gravity model with a positive supply elasticity, as decribed in the article by [Campos, Reggio, and Timini (2024)](https://rolf-campos.github.io/project/ge_gravity2/ge_gravity2.pdf). This new command can be used to simulate any model within the universal gravity framework defined by Allen et al (2020). The `ge_gravity2` command extends a pre-existing command with the name `ge_gravity` (Baier et al 2019; Zylkin, 2019).
+`ge_gravity2` solves and simulates a gravity model with a positive supply elasticity, as decribed in the article by Campos, Reggio, and Timini (2025). This new command can be used to simulate any model within the universal gravity framework defined by Allen et al (2020). The `ge_gravity2` command extends a pre-existing command with the name `ge_gravity` (Baier et al 2019; Zylkin, 2019).
 
 ### Documentation
-The documentation for the command is available in this [PDF](https://rolf-campos.github.io/project/ge_gravity2/ge_gravity2.pdf) file. This file also describes a prototypical trade model belonging to the universal gravity class, and derives in a self-contained manner all the results needed to run counterfactual simulations, including a step-by-step explanation of the algorithm used to solve for price changes in equilibrium.
+The documentation for the command is available in this [PDF](https://rolf-campos.github.io/publication/sj-2025-ge_gravity2/sj-2025-ge_gravity2.pdf) file. This file also describes a prototypical trade model belonging to the universal gravity class, and derives all the results needed to run counterfactual simulations, including a step-by-step explanation of the algorithm used to solve for price changes in equilibrium.
 
 ### Suggested citations
 If you use this command in your work, consider citing
@@ -15,7 +15,7 @@ Statistical Software Components, Boston College Department of Economics, https:/
 ```
 and
 ```plaintext
-Campos, Rodolfo G., Iliana Reggio, and Jacopo Timini (2024). "ge_gravity2: a command for solving universal gravity models," arXiv:2404.09180.
+Campos, Rodolfo G., Iliana Reggio, and Jacopo Timini (2025). "ge_gravity2: a command for solving universal gravity models," The Stata Journal, 25(4), 743-771.
 ```
 
 ### Installation
@@ -59,10 +59,10 @@ ereturn list
 
 ## References
 
-Allen, T., C. Arkolakis and Y. Takahashi, 2020, [Universal Gravity](https://doi.org/10.1086/704385), *Journal of Political Economy*, 128(2), 2020, 393-433 [(ungated link)](https://arkolakis.com/wp-content/uploads/research/UniversalGravity/AAT-Universal-Gravity-paper.pdf)
+Allen, T., C. Arkolakis and Y. Takahashi, (2020), [Universal Gravity](https://doi.org/10.1086/704385), *Journal of Political Economy*, 128(2), 393-433 ([ungated link](https://arkolakis.com/wp-content/uploads/research/UniversalGravity/AAT-Universal-Gravity-paper.pdf)).
 
-Baier, S. L., Y. V. Yotov, and T. Zylkin (2019), [On the widely differing effects of free trade agreements: Lessons from twenty years of trade integration](https://doi.org/10.1016/j.jinteco.2018.11.002), *Journal of International Economics*, 116, 206–226.
+Baier, S. L., Y. V. Yotov, and T. Zylkin (2019), [On the widely differing effects of free trade agreements: Lessons from twenty years of trade integration](https://doi.org/10.1016/j.jinteco.2018.11.002), *Journal of International Economics*, 116, 206-226.
 
-Campos, R. G., I. Reggio, and J. Timini (2024), ge_gravity2: a command for solving universal gravity models, [arXiv:2404.09180](https://arxiv.org/abs/2404.09180).
+Campos, R. G., I. Reggio, and J. Timini (2025). [ge_gravity2: a command for solving universal gravity models](https://doi.org/10.1177/1536867X251398335)," *The Stata Journal*, 25(4), 743-771 ([ungated link](https://rolf-campos.github.io/publication/sj-2025-ge_gravity2/sj-2025-ge_gravity2.pdf)).
 
 Zylkin, T. (2019), GE_GRAVITY: Stata module to solve a simple general equilibrium one sector Armington-CES trade model, Statistical Software Components, Boston College Department of Economics, https://ideas.repec.org/c/boc/bocode/s458678.html.
